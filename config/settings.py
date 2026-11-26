@@ -10,7 +10,9 @@ load_dotenv(BASE_DIR / '.env')
 SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-fallback-key')
 DEBUG  = 'True'  # Default to True if not set
 ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.devtunnels.ms',
+]
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
