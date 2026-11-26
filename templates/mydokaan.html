@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyDokaan - Secret Seller Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background-color: #f1f5f9;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        header {
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 16px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            text-decoration: none;
+            letter-spacing: 0.3px;
+        }
+
+        .secret-badge {
+            background-color: #059669;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-header {
+            text-decoration: none;
+            color: #e2e8f0;
+            border: 1.5px solid #475569;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-header:hover {
+            background-color: #ffffff;
+            color: #0f172a;
+            border-color: #ffffff;
+        }
+
+        .btn-logout {
+            border-color: #ef4444;
+            color: #fca5a5;
+        }
+
+        .btn-logout:hover {
+            background-color: #ef4444;
+            color: #ffffff;
+            border-color: #ef4444;
+        }
+
+        main {
+            max-width: 1180px;
+            margin: 30px auto;
+            padding: 0 5%;
+        }
+
+        .alert-box {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            padding: 13px 18px;
+            border-radius: 8px;
+            margin-bottom: 22px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .welcome-banner {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .welcome-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .welcome-text p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .btn-add-new {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 13px 22px;
+            border-radius: 9px;
+            font-size: 15px;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .btn-add-new:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            transform: translateY(-1px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 26px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px 22px;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 6px;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-number.green {
+            color: #059669;
+        }
+
+        .stat-number.red {
+            color: #dc2626;
+        }
+
+        .inventory-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+        }
+
+        .toolbar {
+            padding: 20px 24px;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .toolbar-title h2 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .toolbar-title span {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .search-wrap {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .my-search-form {
+            display: flex;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .my-search-form input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-right: none;
+            border-radius: 8px 0 0 8px;
+            font-size: 14px;
+            outline: none;
+            background: #ffffff;
+        }
+
+        .my-search-form input:focus {
+            border-color: #0f172a;
+        }
+
+        .my-search-form button {
+            padding: 10px 18px;
+            background: #0f172a;
+            color: #ffffff;
+            border: 1.5px solid #0f172a;
+            border-radius: 0 8px 8px 0;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .clear-link {
+            font-size: 13px;
+            color: #dc2626;
+            font-weight: 600;
+            text-decoration: none;
+            margin-left: 10px;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            padding: 14px 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475569;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+        }
+
+        tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .prod-cell {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .prod-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #e2e8f0;
+            background: #f1f5f9;
+            flex-shrink: 0;
+        }
+
+        .prod-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .prod-id {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .prod-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .stock-pill {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pill-yes {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .pill-no {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .row-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-toggle {
+            padding: 7px 12px;
+            border: 1.5px solid #cbd5e1;
+            background: #ffffff;
+            color: #0f172a;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-toggle:hover {
+            border-color: #0f172a;
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        .btn-delete {
+            padding: 7px 11px;
+            border: 1.5px solid #fecaca;
+            background: #fef2f2;
+            color: #dc2626;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+            color: #ffffff;
+            border-color: #dc2626;
+        }
+
+        .empty-inventory {
+            padding: 55px 20px;
+            text-align: center;
+        }
+
+        .empty-inventory h3 {
+            font-size: 19px;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .empty-inventory p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                align-items: flex-start;
+            }
+
+            .header-actions,
+            .welcome-banner,
+            .toolbar {
+                width: 100%;
+            }
+
+            .header-actions {
+                justify-content: flex-start;
+            }
+
+            .welcome-banner,
+            .toolbar {
+                align-items: flex-start;
+            }
+
+            .search-wrap,
+            .my-search-form {
+                max-width: none;
+                width: 100%;
+            }
+
+            th,
+            td {
+                padding-left: 14px;
+                padding-right: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="brand-area">
+            <a href="/mydokaan/" class="brand-title">MyDokaan</a>
+            <span class="secret-badge">Verified Seller Portal</span>
+        </div>
+
+        <div class="header-actions">
+            <a href="/marketplace/" class="btn-header">View Live Marketplace ↗</a>
+            <a href="/" class="btn-header">Home</a>
+            <a href="/logout/" class="btn-header btn-logout">Logout</a>
+        </div>
+    </header>
+
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-box">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="welcome-banner">
+            <div class="welcome-text">
+                <h1>Welcome, {{ seller.full_name|default:"Seller" }}</h1>
+                <p>Seller ID: <strong>{{ seller.user_id|default:"SELLER-01" }}</strong> • Manage your products and live marketplace stock below.</p>
+            </div>
+            <a href="/mydokaan/add/" class="btn-add-new">
+                + Add New Item
+            </a>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total My Products</div>
+                <div class="stat-number">{{ total_products|default:0 }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">In Stock (Yes)</div>
+                <div class="stat-number green">{{ in_stock_count|default:0 }}</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">Out of Stock (No)</div>
+                <div class="stat-number red">{{ out_of_stock_count|default:0 }}</div>
+            </div>
+        </div>
+
+        <div class="inventory-card">
+            <div class="toolbar">
+                <div class="toolbar-title">
+                    <h2>My Products & Stock</h2>
+                    <span>Only items uploaded by your shop appear here</span>
+                </div>
+
+                <div class="search-wrap">
+                    <form action="/mydokaan/" method="GET" class="my-search-form">
+                        <input type="text" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Search my products...">
+                        <button type="submit">Search</button>
+                    </form>
+                    {% if request.GET.q %}
+                        <a href="/mydokaan/" class="clear-link">✕ Clear</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if my_products %}
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Price (৳)</th>
+                                <th>Stock Status</th>
+                                <th>Quick Controls</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in my_products %}
+                                <tr>
+                                    <td>
+                                        <div class="prod-cell">
+                                            {% if product.photo %}
+                                                <img src="{{ product.photo.url }}" alt="{{ product.name }}" class="prod-thumb">
+                                            {% else %}
+                                                <img src="https://placehold.co/120x120?text=Item" alt="{{ product.name }}" class="prod-thumb">
+                                            {% endif %}
+                                            <div>
+                                                <div class="prod-name">{{ product.name }}</div>
+                                                <div class="prod-id">Item ID: #{{ product.id }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <span class="prod-price">৳ {{ product.price }}</span>
+                                    </td>
+
+                                    <td>
+                                        {% if product.in_stock %}
+                                            <span class="stock-pill pill-yes">Stock: Yes</span>
+                                        {% else %}
+                                            <span class="stock-pill pill-no">Stock: No</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <div class="row-actions">
+                                            <form action="/mydokaan/toggle-stock/{{ product.id }}/" method="POST">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn-toggle">
+                                                    {% if product.in_stock %}
+                                                        Mark Stock: No
+                                                    {% else %}
+                                                        Mark Stock: Yes
+                                                    {% endif %}
+                                                </button>
+                                            </form>
+
+                                            <form action="/mydokaan/delete/{{ product.id }}/" method="POST" onsubmit="return confirm('Delete this product from the marketplace?');">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn-delete">Delete</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="empty-inventory">
+                    {% if request.GET.q %}
+                        <h3>No matching products found for "{{ request.GET.q }}"</h3>
+                        <p>Try searching with a different product name or clear your filter.</p>
+                        <a href="/mydokaan/" class="btn-add-new">Show All My Products</a>
+                    {% else %}
+                        <h3>Your Dokaan has no products yet</h3>
+                        <p>Click the button below to upload your first product photo, set its price, and publish it to the Marketplace.</p>
+                        <a href="/mydokaan/add/" class="btn-add-new">+ Add New Item</a>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </main>
+
+</body>
+</html>

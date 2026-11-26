@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Status - #ORD-{{ order.id }}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2922 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 20px;
+            color: #1e293b;
+        }
+
+        .status-card {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            text-align: center;
+            animation: popIn 0.4s ease-out;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header-confirmed {
+            background: #ecfdf5;
+            padding: 32px 28px 24px;
+            border-bottom: 1px solid #d1fae5;
+        }
+
+        .header-pending {
+            background: #fffbeb;
+            padding: 32px 28px 24px;
+            border-bottom: 1px solid #fde68a;
+        }
+
+        .badge-circle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            margin-bottom: 14px;
+            color: #ffffff;
+        }
+
+        .bg-green {
+            background: #059669;
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+        }
+
+        .bg-amber {
+            background: #d97706;
+            box-shadow: 0 8px 20px rgba(217, 119, 6, 0.3);
+        }
+
+        .header-confirmed h1 {
+            font-size: 24px;
+            color: #065f46;
+            margin-bottom: 6px;
+        }
+
+        .header-confirmed p {
+            font-size: 14px;
+            color: #047857;
+        }
+
+        .header-pending h1 {
+            font-size: 22px;
+            color: #92400e;
+            margin-bottom: 6px;
+        }
+
+        .header-pending p {
+            font-size: 14px;
+            color: #b45309;
+        }
+
+        .receipt-body {
+            padding: 24px 30px 30px;
+            text-align: left;
+        }
+
+        .receipt-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px 18px;
+            margin-bottom: 20px;
+        }
+
+        .receipt-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 9px 0;
+            border-bottom: 1px dashed #cbd5e1;
+            font-size: 14px;
+        }
+
+        .receipt-row:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .receipt-row:first-child {
+            padding-top: 0;
+        }
+
+        .receipt-row span {
+            color: #64748b;
+        }
+
+        .receipt-row strong {
+            color: #0f172a;
+        }
+
+        .pill-confirmed {
+            background: #dcfce7;
+            color: #166534;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pill-pending {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn {
+            display: block;
+            text-align: center;
+            padding: 13px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #0f172a;
+            border: 1.5px solid #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="status-card" id="order-tracker" data-order-id="{{ order.id }}" data-is-paid="{{ order.is_paid|yesno:'true,false' }}">
+
+        {% if order.is_paid or order.order_status == 'confirmed' %}
+            <div class="header-confirmed">
+                <div class="badge-circle bg-green">✓</div>
+                <h1>Order Confirmed by Admin!</h1>
+                <p>Your advance payment is verified and your order is being prepared for delivery.</p>
+            </div>
+        {% else %}
+            <div class="header-pending">
+                <div class="badge-circle bg-amber">⏳</div>
+                <h1>Payment Submitted — Awaiting Admin Confirmation</h1>
+                <p>We received your payment details. This page will update automatically as soon as Admin confirms your order.</p>
+            </div>
+        {% endif %}
+
+        <div class="receipt-body">
+            <div class="receipt-box">
+                <div class="receipt-row">
+                    <span>Order ID</span>
+                    <strong>#ORD-{{ order.id }}</strong>
+                </div>
+
+                <div class="receipt-row">
+                    <span>Customer Name</span>
+                    <strong>{{ order.customer_name }}</strong>
+                </div>
+
+                <div class="receipt-row">
+                    <span>Delivery Address</span>
+                    <strong>{{ order.delivery_address }}</strong>
+                </div>
+
+                <div class="receipt-row">
+                    <span>Payment Method</span>
+                    <strong>{{ order.get_payment_method_display|default:"Submitted" }}</strong>
+                </div>
+
+                {% if order.payment_method == 'bkash' %}
+                    <div class="receipt-row">
+                        <span>bKash Number / TrxID</span>
+                        <strong>{{ order.bkash_number }} ({{ order.bkash_trx_id }})</strong>
+                    </div>
+                {% elif order.payment_method == 'credit_card' %}
+                    <div class="receipt-row">
+                        <span>Cardholder</span>
+                        <strong>{{ order.card_holder }}</strong>
+                    </div>
+                {% endif %}
+
+                <div class="receipt-row">
+                    <span>Order Status</span>
+                    {% if order.is_paid or order.order_status == 'confirmed' %}
+                        <span class="pill-confirmed">✓ ORDER CONFIRMED</span>
+                    {% else %}
+                        <span class="pill-pending">⏳ VERIFYING PAYMENT</span>
+                    {% endif %}
+                </div>
+
+                <div class="receipt-row">
+                    <span>Total Amount</span>
+                    <strong style="color:#059669; font-size:17px;">৳ {{ order.total_amount }}</strong>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn btn-secondary" onclick="window.location.reload();">
+                    ↻ Refresh Status
+                </button>
+                <a href="/marketplace/" class="btn btn-primary">
+                    Continue Shopping →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tracker = document.getElementById('order-tracker');
+        const orderId = tracker.getAttribute('data-order-id');
+        const isPaid = tracker.getAttribute('data-is-paid') === 'true';
+
+        if (!isPaid && orderId) {
+            setInterval(function () {
+                fetch('/orders/check-status/' + orderId + '/')
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.is_paid === true || data.order_status === 'confirmed') {
+                            window.location.reload();
+                        }
+                    })
+                    .catch(() => {});
+            }, 4000);
+        }
+    </script>
+
+</body>
+</html>

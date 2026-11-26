@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Registration & Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2922 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 20px;
+            color: #1e293b;
+        }
+
+        /* Top Navigation */
+        .top-links {
+            width: 100%;
+            max-width: 560px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .top-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            transition: all 0.25s ease;
+        }
+
+        .top-links a:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+        }
+
+        /* Main Card */
+        .register-card {
+            width: 100%;
+            max-width: 560px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+            overflow: hidden;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 28px 32px 22px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .merchant-tag {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .card-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .card-header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Alerts */
+        .alert-container {
+            padding: 18px 32px 0;
+        }
+
+        .alert-error {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .alert-success {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Form Layout */
+        .card-body {
+            padding: 26px 32px 32px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .req {
+            font-size: 11px;
+            color: #059669;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 13px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .form-group input[type="file"] {
+            padding: 9px 10px;
+            background: #ffffff;
+            cursor: pointer;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            background: #ffffff;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+
+        /* Buttons */
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            margin-top: 6px;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.3);
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-activate {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+        }
+
+        .btn-activate:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+        }
+
+        /* STAGE 2: PENDING APPROVAL BOX */
+        .status-box {
+            text-align: center;
+            padding: 20px 10px;
+        }
+
+        .pulse-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 18px;
+            border: 1px solid #fde68a;
+        }
+
+        .dot-pulse {
+            width: 10px;
+            height: 10px;
+            background-color: #d97706;
+            border-radius: 50%;
+            animation: pulseAnim 1.4s infinite ease-in-out;
+        }
+
+        @keyframes pulseAnim {
+            0%, 100% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.25); opacity: 1; }
+        }
+
+        .status-box h2 {
+            font-size: 21px;
+            color: #0f172a;
+            margin-bottom: 10px;
+        }
+
+        .status-box p {
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .gmail-highlight {
+            background: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #0f172a;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border: 1px dashed #94a3b8;
+        }
+
+        /* STAGE 3: VERIFIED BANNER */
+        .verified-banner {
+            background: #ecfdf5;
+            border: 1.5px solid #10b981;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 22px;
+            text-align: center;
+        }
+
+        .verified-banner h3 {
+            color: #065f46;
+            font-size: 17px;
+            margin-bottom: 4px;
+        }
+
+        .verified-banner p {
+            color: #047857;
+            font-size: 13px;
+        }
+
+        .footer-note {
+            margin-top: 16px;
+            text-align: center;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .footer-note a {
+            color: #059669;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        @media (max-width: 540px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-links">
+        <a href="/">← Back to Home</a>
+        <a href="/login/">Already Verified? Login →</a>
+    </div>
+
+    <div class="register-card">
+        <div class="card-header">
+            <span class="merchant-tag">Seller Onboarding Only</span>
+            <h1>Merchant Registration</h1>
+            <p>Submit your business documents for manual admin verification</p>
+        </div>
+
+        <!-- Django Messages -->
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="{% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="card-body">
+
+            {% if status == 'verified' %}
+                <!-- =========================================================
+                     STAGE 3: LIVE VERIFIED -> ENTER GMAIL KEYS & SET PASSKEY
+                     ========================================================= -->
+                <div class="verified-banner">
+                    <h3>✓ Status: Live Verified by Admin</h3>
+                    <p>Check your Gmail for your assigned <strong>User ID</strong> and <strong>Business Key</strong>, then create your own Passkey below.</p>
+                </div>
+
+                <form action="/register/activate/" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="gmail" value="{{ seller_gmail }}">
+
+                    <div class="form-group">
+                        <label for="act-userid">
+                            User ID (Sent to your Gmail) <span class="req">Required</span>
+                        </label>
+                        <input type="text" id="act-userid" name="user_id" required autocomplete="username">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="act-business-key">
+                            Business Key <span class="req">Required</span>
+                        </label>
+                        <input type="text" id="act-business-key" name="business_key" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="act-passkey">
+                            Create Passkey <span class="req">Minimum 4 characters</span>
+                        </label>
+                        <input type="password" id="act-passkey" name="new_passkey" minlength="4" required autocomplete="new-password">
+                    </div>
+
+                    <div class="form-group full-width">
+                        <button type="submit" class="btn-submit btn-activate">Activate Seller Account</button>
+                    </div>
+                </form>
+
+            {% elif status == 'pending' %}
+                <div class="status-box" id="verification-status">
+                    <div class="pulse-badge">
+                        <span class="dot-pulse"></span>
+                        Waiting for Admin Approval
+                    </div>
+                    <h2>Your application is under review</h2>
+                    <p>Keep this Gmail address. The admin will assign your login credentials after verification.</p>
+                    {% if seller_gmail %}
+                        <div class="gmail-highlight">{{ seller_gmail }}</div>
+                    {% endif %}
+                    <button type="button" class="btn-submit" id="check-status-btn">Check Verification Status</button>
+                </div>
+
+            {% else %}
+                <form action="{% url 'register' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="full-name">Full Name <span class="req">Required</span></label>
+                            <input type="text" id="full-name" name="full_name" required autocomplete="name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number <span class="req">Required</span></label>
+                            <input type="tel" id="phone" name="phone_number" required autocomplete="tel">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="gmail">Gmail Address <span class="req">Required</span></label>
+                            <input type="email" id="gmail" name="gmail" required autocomplete="email">
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="address">Address <span class="req">Required</span></label>
+                            <textarea id="address" name="address" required></textarea>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="stockhouse-address">Stockhouse Address <span class="req">Required</span></label>
+                            <textarea id="stockhouse-address" name="stockhouse_address" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nid-pdf">NID PDF <span class="req">Required</span></label>
+                            <input type="file" id="nid-pdf" name="nid_pdf" accept=".pdf" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="trade-license">Trade License <span class="req">Required</span></label>
+                            <input type="file" id="trade-license" name="trade_license" accept=".pdf,.jpg,.jpeg,.png" required>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <button type="submit" class="btn-submit">Submit Seller Application</button>
+                        </div>
+                    </div>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if status == 'pending' and seller_gmail %}
+    <script>
+        document.getElementById('check-status-btn').addEventListener('click', async function () {
+            const response = await fetch("{% url 'check_verification_status' %}?gmail={{ seller_gmail|urlencode }}");
+            const data = await response.json();
+            if (data.is_verified) {
+                window.location.href = "{% url 'register' %}?stage=verified&gmail={{ seller_gmail|urlencode }}";
+            } else {
+                alert('Your application is still pending approval.');
+            }
+        });
+    </script>
+    {% endif %}
+</body>
+</html>

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Portal Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2922 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #1e293b;
+        }
+
+        .top-links {
+            width: 100%;
+            max-width: 460px;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .top-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+            transition: all 0.25s ease;
+        }
+
+        .top-links a:hover {
+            background: rgba(255, 255, 255, 0.18);
+            color: #ffffff;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 460px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+            overflow: hidden;
+            animation: cardEntrance 0.5s ease-out;
+        }
+
+        @keyframes cardEntrance {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-header {
+            background: #f8fafc;
+            padding: 28px 32px 20px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .card-header p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        /* Role Switcher Tabs */
+        .role-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: #e2e8f0;
+            padding: 5px;
+            margin: 20px 32px 0;
+            border-radius: 10px;
+        }
+
+        .tab-btn {
+            padding: 11px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .alert-container {
+            padding: 16px 32px 0;
+        }
+
+        .alert {
+            padding: 12px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .form-body {
+            padding: 24px 32px 32px;
+        }
+
+        .role-form {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .role-form.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 7px;
+        }
+
+        .badge-optional {
+            font-size: 11px;
+            font-weight: 500;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .badge-required {
+            font-size: 11px;
+            font-weight: 600;
+            color: #059669;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 75px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            background: #ffffff;
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            margin-top: 6px;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .btn-customer {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+        }
+
+        .btn-customer:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            transform: translateY(-1px);
+        }
+
+        .btn-seller {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.35);
+        }
+
+        .btn-seller:hover {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            transform: translateY(-1px);
+        }
+
+        .helper-note {
+            margin-top: 14px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-links">
+        <a href="/">← Back to Home</a>
+        <a href="/marketplace/">Browse Marketplace →</a>
+    </div>
+
+    <div class="login-card">
+        <div class="card-header">
+            <h1>Welcome Back</h1>
+            <p>Select your account type to continue</p>
+        </div>
+
+        <!-- Role Switcher Tabs -->
+        <div class="role-tabs" role="tablist" aria-label="Account type">
+            <button type="button" class="tab-btn active" id="tab-customer" role="tab"
+                    aria-selected="true" aria-controls="form-customer">
+                Customer Login
+            </button>
+            <button type="button" class="tab-btn" id="tab-seller" role="tab"
+                    aria-selected="false" aria-controls="form-seller">
+                Seller Portal
+            </button>
+        </div>
+
+        <!-- Django Validation / Error Messages -->
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-body">
+
+            <!-- 1. CUSTOMER FORM -->
+            <form action="/login/" method="POST" id="form-customer" class="role-form active"
+                  aria-labelledby="tab-customer">
+                {% csrf_token %}
+                <input type="hidden" name="login_type" value="customer">
+
+                <div class="form-group">
+                    <label for="cust-name">
+                        Full Name <span class="badge-required">Required</span>
+                    </label>
+                    <input type="text" id="cust-name" name="full_name" placeholder="e.g. Tanvir Ahmed" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-address">
+                        Delivery Address <span class="badge-required">Required</span>
+                    </label>
+                    <textarea id="cust-address" name="address" placeholder="House, Road, Area, City (e.g. Khulna)" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-email">
+                        Email Address <span class="badge-required">Required</span>
+                    </label>
+                    <input type="email" id="cust-email" name="email" placeholder="you@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cust-wallet">
+                        bKash or Nagad Number <span class="badge-optional">Optional</span>
+                    </label>
+                    <input type="tel" id="cust-wallet" name="wallet_number" placeholder="01XXXXXXXXX (Optional)">
+                </div>
+
+                <button type="submit" class="btn-submit btn-customer">
+                    Continue to Marketplace →
+                </button>
+                <p class="helper-note">Instant verification • Automatically directs you to the Marketplace.</p>
+            </form>
+
+            <!-- 2. SELLER FORM -->
+            <form action="/login/" method="POST" id="form-seller" class="role-form"
+                  aria-labelledby="tab-seller">
+                {% csrf_token %}
+                <input type="hidden" name="login_type" value="seller">
+
+                <div class="form-group">
+                    <label for="seller-id">
+                        MyDokaan User ID <span class="badge-required">Required</span>
+                    </label>
+                    <input type="text" id="seller-id" name="mydokaan_user_id"
+                           placeholder="Enter your assigned User ID" required disabled>
+                </div>
+
+                <div class="form-group">
+                    <label for="seller-passkey">
+                        Passkey <span class="badge-required">Required</span>
+                    </label>
+                    <input type="password" id="seller-passkey" name="passkey"
+                           placeholder="Enter your secure passkey" required disabled>
+                </div>
+
+                <button type="submit" class="btn-submit btn-seller">
+                    Continue to Seller Panel →
+                </button>
+                <p class="helper-note">Sign in with the seller ID and passkey assigned to your account.</p>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const roleTabs = [
+            { button: document.getElementById("tab-customer"), form: document.getElementById("form-customer") },
+            { button: document.getElementById("tab-seller"), form: document.getElementById("form-seller") }
+        ];
+
+        roleTabs.forEach(({ button, form }) => {
+            button.addEventListener("click", () => {
+                roleTabs.forEach(({ button: otherButton, form: otherForm }) => {
+                    const isActive = otherButton === button;
+                    otherButton.classList.toggle("active", isActive);
+                    otherButton.setAttribute("aria-selected", String(isActive));
+                    otherForm.classList.toggle("active", isActive);
+                    otherForm.querySelectorAll("input, textarea, select, button").forEach((control) => {
+                        control.disabled = !isActive;
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advance Payment - Secure Checkout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f2922 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 25px 20px;
+            color: #1e293b;
+        }
+
+        .top-bar {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .top-bar a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .secure-badge {
+            color: #6ee7b7;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .payment-card {
+            width: 100%;
+            max-width: 500px;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .amount-header {
+            background: #f8fafc;
+            padding: 22px 28px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .order-meta span {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 700;
+        }
+
+        .order-meta strong {
+            font-size: 16px;
+            color: #0f172a;
+        }
+
+        .payable-box {
+            text-align: right;
+        }
+
+        .payable-box span {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .payable-box strong {
+            font-size: 24px;
+            color: #059669;
+            font-weight: 800;
+        }
+
+        .method-selector {
+            padding: 20px 28px 0;
+        }
+
+        .selector-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #475569;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .method-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .method-btn {
+            padding: 13px 12px;
+            border: 2px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #475569;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .method-btn.active-bkash {
+            border-color: #e2136e;
+            background: #fdf2f8;
+            color: #e2136e;
+        }
+
+        .method-btn.active-card {
+            border-color: #0f172a;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .alert-container {
+            padding: 16px 28px 0;
+        }
+
+        .alert-error {
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .form-container {
+            padding: 22px 28px 28px;
+        }
+
+        .pay-form {
+            display: none;
+        }
+
+        .pay-form.active {
+            display: block;
+        }
+
+        .bkash-banner {
+            background: #fdf2f8;
+            border: 1px solid #fbcfe8;
+            border-radius: 8px;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #9d174d;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            background: #ffffff;
+            border-color: #0f172a;
+        }
+
+        .card-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .btn-pay {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .btn-bkash {
+            background: linear-gradient(135deg, #e2136e 0%, #be123c 100%);
+        }
+
+        .btn-card {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+
+        .footer-note {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="/cart/">← Back to Cart</a>
+        <span class="secure-badge">🔒 Admin-Verified Checkout</span>
+    </div>
+
+    <div class="payment-card">
+        <div class="amount-header">
+            <div class="order-meta">
+                <span>Order Reference</span>
+                <strong>#ORD-{{ order.id }}</strong>
+            </div>
+            <div class="payable-box">
+                <span>Total Payable</span>
+                <strong>৳ {{ order.total_amount }}</strong>
+            </div>
+        </div>
+
+        <div class="method-selector">
+            <span class="selector-label">Choose Advance Payment Method:</span>
+            <div class="method-tabs">
+                <button type="button" class="method-btn active-bkash" id="btn-tab-bkash">
+                    bKash Payment
+                </button>
+                <button type="button" class="method-btn" id="btn-tab-card">
+                    Credit / Debit Card
+                </button>
+            </div>
+        </div>
+
+        {% if messages %}
+            <div class="alert-container">
+                {% for message in messages %}
+                    <div class="alert-error">{{ message }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <div class="form-container">
+
+            <!-- 1. BKASH PAYMENT FORM -->
+            <form action="/orders/payment/{{ order.id }}/" method="POST" id="form-bkash" class="pay-form active">
+                {% csrf_token %}
+                <input type="hidden" name="payment_method" value="bkash">
+
+                <div class="bkash-banner">
+                    Send <strong>৳ {{ order.total_amount }}</strong> to Merchant bKash <strong>017XXXXXXXX</strong>, then submit your bKash Number & Transaction ID below for Admin confirmation.
+                </div>
+
+                <div class="form-group">
+                    <label for="bkash-number">Your bKash Account Number</label>
+                    <input type="tel" id="bkash-number" name="bkash_number" value="{{ customer_wallet|default:'' }}" placeholder="01XXXXXXXXX" maxlength="11" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="bkash-trx">bKash Transaction ID (TrxID)</label>
+                    <input type="text" id="bkash-trx" name="bkash_trx_id" placeholder="e.g. 9G7H2K8L1P" required>
+                </div>
+
+                <button type="submit" class="btn-pay btn-bkash">
+                    Submit bKash Payment & Confirm Order →
+                </button>
+                <p class="footer-note">Sent directly to Admin panel for instant payment verification.</p>
+            </form>
+
+            <!-- 2. CREDIT CARD PAYMENT FORM -->
+            <form action="/orders/payment/{{ order.id }}/" method="POST" id="form-card" class="pay-form">
+                {% csrf_token %}
+                <input type="hidden" name="payment_method" value="credit_card">
+
+                <div class="form-group">
+                    <label for="card-holder">Cardholder Name</label>
+                    <input type="text" id="card-holder" name="card_holder" placeholder="Name printed on card" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="card-number">Card Number (Visa / Mastercard / Amex)</label>
+                    <input type="text" id="card-number" name="card_number" placeholder="XXXX XXXX XXXX XXXX" maxlength="19" required>
+                </div>
+
+                <div class="card-row">
+                    <div class="form-group">
+                        <label for="card-expiry">Expiry Date</label>
+                        <input type="text" id="card-expiry" name="card_expiry" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="card-cvv">CVV / CVC</label>
+                        <input type="password" id="card-cvv" name="card_cvv" placeholder="3 or 4 digits" maxlength="4" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-pay btn-card">
+                    Submit Card Payment (৳ {{ order.total_amount }}) →
+                </button>
+                <p class="footer-note">Card details are sent securely to Admin for order confirmation.</p>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        const bkashTab = document.getElementById('btn-tab-bkash');
+        const cardTab = document.getElementById('btn-tab-card');
+        const bkashForm = document.getElementById('form-bkash');
+        const cardForm = document.getElementById('form-card');
+
+        bkashTab.addEventListener('click', function () {
+            bkashTab.classList.add('active-bkash');
+            cardTab.classList.remove('active-card');
+            bkashForm.classList.add('active');
+            cardForm.classList.remove('active');
+        });
+
+        cardTab.addEventListener('click', function () {
+            cardTab.classList.add('active-card');
+            bkashTab.classList.remove('active-bkash');
+            cardForm.classList.add('active');
+            bkashForm.classList.remove('active');
+        });
+    </script>
+
+</body>
+</html>

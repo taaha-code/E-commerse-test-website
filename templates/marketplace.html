@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace</title>
+    <style>
+        /* Basic Reset & Framework Layout (Customize colors & animations later) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #222;
+            line-height: 1.5;
+        }
+
+        /* HEADER & NAVIGATION CONTAINER */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ddd;
+            padding: 15px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Top Row: Brand/Cart on Left, 3 Navigation Items on Right */
+        .nav-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .brand-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+            color: #111;
+        }
+
+        .btn-cart {
+            background-color: #1f6e43;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .cart-badge {
+            background-color: #ffffff;
+            color: #1f6e43;
+            padding: 1px 7px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* 3-ITEM NAVIGATION BAR (1. Home, 2. Login, 3. Refresh) */
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #222;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 8px 16px;
+            border: 1px solid #222;
+            border-radius: 4px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .nav-links a:hover {
+            background-color: #222;
+            color: #ffffff;
+        }
+
+        /* Bottom-Right Search Bar Row */
+        .nav-bottom-row {
+            display: flex;
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        .search-bar {
+            display: flex;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+            border-right: none;
+            border-radius: 4px 0 0 4px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-bar button {
+            padding: 9px 16px;
+            border: 1px solid #222;
+            background-color: #222;
+            color: #ffffff;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .search-bar button:hover {
+            background-color: #444;
+        }
+
+        /* MAIN MARKETPLACE CONTENT */
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 5%;
+        }
+
+        /* Django Feedback Messages */
+        .alert-box {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .marketplace-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .marketplace-header h1 {
+            font-size: 26px;
+        }
+
+        .clear-search {
+            font-size: 14px;
+            color: #d9534f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* REAL-TIME PRODUCT CARDS GRID */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 22px;
+        }
+
+        .product-card {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .product-img-box {
+            width: 100%;
+            height: 200px;
+            background-color: #eeeeee;
+            overflow: hidden;
+        }
+
+        .product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-info {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .product-title {
+            font-size: 17px;
+            font-weight: bold;
+            color: #111;
+        }
+
+        .seller-name {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .product-price {
+            font-size: 19px;
+            font-weight: bold;
+            color: #222;
+            margin-top: 4px;
+        }
+
+        /* STOCK STATUS (YES / NO) */
+        .stock-status {
+            font-size: 13px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            width: fit-content;
+        }
+
+        .stock-yes {
+            background-color: #e6f4ea;
+            color: #1f6e43;
+        }
+
+        .stock-no {
+            background-color: #fce8e6;
+            color: #c5221f;
+        }
+
+        /* ADD TO CART BUTTON */
+        .card-action {
+            padding: 0 16px 16px;
+        }
+
+        .btn-add-cart {
+            width: 100%;
+            padding: 11px;
+            background-color: #222;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-add-cart:hover {
+            background-color: #1f6e43;
+        }
+
+        .btn-disabled {
+            width: 100%;
+            padding: 11px;
+            background-color: #cccccc;
+            color: #666666;
+            border: none;
+            border-radius: 5px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: not-allowed;
+        }
+
+        /* EMPTY STATE */
+        .empty-box {
+            grid-column: 1 / -1;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 50px 20px;
+            text-align: center;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- TOP ROW: STORE NAME + MY CART ON LEFT, 3 NAVIGATION ITEMS ON RIGHT -->
+        <div class="nav-top-row">
+            <div class="brand-area">
+                <a href="{% url 'home' %}" class="logo">Marketplace</a>
+                <a href="{% url 'view_cart' %}" class="btn-cart">
+                    My Cart <span class="cart-badge">{{ cart_count|default:0 }}</span>
+                </a>
+            </div>
+
+            <!-- 3 Navigation Items: 1) Home, 2) Login, 3) Refresh -->
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li>
+                        {% if request.session.role %}
+                            <a href="{% url 'logout' %}">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}">Login</a>
+                        {% endif %}
+                    </li>
+                    <li><a href="{% url 'marketplace' %}">Refresh</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- BOTTOM-RIGHT OF NAVIGATION BAR: SEARCH BAR -->
+        <div class="nav-bottom-row">
+            <form action="{% url 'marketplace' %}" method="GET" class="search-bar">
+                <input type="text" name="q" value="{{ request.GET.q|default:'' }}" placeholder="Search products...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <!-- MAIN MARKETPLACE CONTENT -->
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-box">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="marketplace-header">
+            {% if request.GET.q %}
+                <h1>Search Results for "{{ request.GET.q }}"</h1>
+                <a href="{% url 'marketplace' %}" class="clear-search">✕ Clear Search</a>
+            {% else %}
+                <h1>Available Products</h1>
+                <span>Showing {{ products|length }} item(s)</span>
+            {% endif %}
+        </div>
+
+        <!-- REAL-TIME DJANGO PRODUCT CARDS -->
+        <div class="products-grid">
+            {% for product in products %}
+                <div class="product-card">
+                    <div>
+                        <!-- Product Photo Provided by Seller -->
+                        <div class="product-img-box">
+                            {% if product.photo %}
+                                <img src="{{ product.photo.url }}" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="https://placehold.co/480x360?text=No+Photo" alt="{{ product.name }}">
+                            {% endif %}
+                        </div>
+                        <div class="product-info">
+                            <div class="product-title">{{ product.name }}</div>
+                            <div class="seller-name">Sold by {{ product.seller_name|default:"Verified Seller" }}</div>
+                            <div class="product-price">৳ {{ product.price }}</div>
+                            {% if product.in_stock %}
+                                <span class="stock-status stock-yes">In Stock</span>
+                            {% else %}
+                                <span class="stock-status stock-no">Out of Stock</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-action">
+                        {% if product.in_stock %}
+                            <form action="{% url 'add_to_cart' product.id %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-add-cart">Add to Cart</button>
+                            </form>
+                        {% else %}
+                            <button type="button" class="btn-disabled" disabled>Unavailable</button>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <div class="empty-box">
+                    {% if request.GET.q %}
+                        <h2>No matching products found</h2>
+                        <p>Try another search or clear the search filter.</p>
+                    {% else %}
+                        <h2>The marketplace is empty</h2>
+                        <p>Verified sellers have not published any products yet.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    </main>
+
+</body>
+</html>

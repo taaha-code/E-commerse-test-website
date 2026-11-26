@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart & Checkout</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.5;
+        }
+
+        /* TOP HEADER */
+        header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .brand {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-nav {
+            text-decoration: none;
+            color: #0f172a;
+            border: 1.5px solid #0f172a;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .btn-nav:hover {
+            background-color: #0f172a;
+            color: #ffffff;
+        }
+
+        /* MAIN LAYOUT */
+        main {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 5%;
+        }
+
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 24px;
+        }
+
+        /* Alerts */
+        .alert-box {
+            background-color: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* TWO-COLUMN CART & ORDER SUMMARY GRID */
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 28px;
+            align-items: start;
+        }
+
+        /* LEFT: CART ITEMS LIST */
+        .cart-items-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .cart-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .cart-item:first-child {
+            padding-top: 0;
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .item-img {
+            width: 76px;
+            height: 76px;
+            border-radius: 8px;
+            object-fit: cover;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+        }
+
+        .item-details h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .item-unit-price {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        /* Quantity Controls */
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #cbd5e1;
+            background: #f8fafc;
+            color: #0f172a;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .qty-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .qty-value {
+            font-size: 14px;
+            font-weight: 700;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .item-right {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        .item-subtotal {
+            font-size: 17px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .btn-remove {
+            background: none;
+            border: none;
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .btn-remove:hover {
+            color: #991b1b;
+        }
+
+        /* RIGHT: CHECKOUT & CONFIRM ORDER CARD */
+        .checkout-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .checkout-card h2 {
+            font-size: 19px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            color: #475569;
+            margin-bottom: 10px;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 2px dashed #cbd5e1;
+            margin-bottom: 22px;
+        }
+
+        /* Delivery Form Inside Checkout */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            background: #f8fafc;
+            outline: none;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 68px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            background: #ffffff;
+            border-color: #059669;
+        }
+
+        /* Payment Notice Badge */
+        .payment-notice {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Confirm Order -> Redirect to bKash / Card */
+        .btn-confirm {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(5, 150, 105, 0.35);
+            transition: transform 0.15s ease, background 0.2s ease;
+        }
+
+        .btn-confirm:hover {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            transform: translateY(-1px);
+        }
+
+        /* EMPTY CART STATE */
+        .empty-cart {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .empty-cart h2 {
+            font-size: 22px;
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+
+        .empty-cart p {
+            color: #64748b;
+            margin-bottom: 22px;
+        }
+
+        .btn-shop {
+            display: inline-block;
+            background: #0f172a;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        @media (max-width: 820px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVIGATION -->
+    <header>
+        <a href="/marketplace/" class="brand">Shopping Cart</a>
+        <div class="nav-buttons">
+            <a href="/" class="btn-nav">Home</a>
+            <a href="/marketplace/" class="btn-nav">← Continue Shopping</a>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">Your Shopping Cart</h1>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert-box">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% if cart_items %}
+            <div class="cart-layout">
+
+                <!-- LEFT: SELECTED PRODUCTS -->
+                <div class="cart-items-card">
+                    {% for item in cart_items %}
+                        <div class="cart-item">
+                            <div class="item-left">
+                                {% if item.product.photo %}
+                                    <img src="{{ item.product.photo.url }}" alt="{{ item.product.name }}" class="item-img">
+                                {% else %}
+                                    <img src="https://placehold.co" alt="{{ item.product.name }}" class="item-img">
+                                {% endif %}
+                                <div class="item-details">
+                                    <h3>{{ item.product.name }}</h3>
+                                    <div class="item-unit-price">৳ {{ item.product.price }} each</div>
+                                    <div class="qty-controls">
+                                        <form action="{% url 'update_cart' item.product.id 'decrease' %}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" class="qty-btn" aria-label="Decrease quantity">−</button>
+                                        </form>
+                                        <span class="qty-value">{{ item.quantity }}</span>
+                                        <form action="{% url 'update_cart' item.product.id 'increase' %}" method="POST">
+                                            {% csrf_token %}
+                                            <button type="submit" class="qty-btn" aria-label="Increase quantity">+</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item-right">
+                                <div class="item-subtotal">৳ {{ item.subtotal }}</div>
+                                <form action="{% url 'remove_from_cart' item.product.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-remove">Remove</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- RIGHT: ORDER SUMMARY AND DELIVERY DETAILS -->
+                <aside class="checkout-card">
+                    <h2>Order Summary</h2>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <strong>৳ {{ subtotal_amount }}</strong>
+                    </div>
+                    <div class="summary-row">
+                        <span>Delivery fee</span>
+                        <strong>৳ {{ delivery_fee }}</strong>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <strong>৳ {{ total_amount }}</strong>
+                    </div>
+
+                    <div class="payment-notice">
+                        Payment details are collected on the next step after you confirm your order.
+                    </div>
+
+                    <form action="{% url 'confirm_order' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="customer-name">Full name</label>
+                            <input id="customer-name" type="text" name="customer_name" value="{{ customer_name }}" autocomplete="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-email">Email address (used to match your customer profile)</label>
+                            <input id="customer-email" type="email" name="customer_email" value="{{ customer_email }}" autocomplete="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customer-phone">Phone number</label>
+                            <input id="customer-phone" type="tel" name="customer_phone" value="{{ customer_phone }}" autocomplete="tel" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="delivery-address">Delivery address</label>
+                            <textarea id="delivery-address" name="delivery_address" autocomplete="street-address" required>{{ customer_address }}</textarea>
+                        </div>
+                        <button type="submit" class="btn-confirm">Confirm Order</button>
+                    </form>
+                </aside>
+            </div>
+        {% else %}
+            <section class="empty-cart">
+                <h2>Your cart is empty</h2>
+                <p>Browse the marketplace and add items to get started.</p>
+                <a href="{% url 'marketplace' %}" class="btn-shop">Shop the Marketplace</a>
+            </section>
+        {% endif %}
+    </main>
+</body>
+</html>
+
